@@ -39,3 +39,9 @@ However I have not observed any side-effects from this, certainly TDP still work
 ## Disclaimer
 
 Only tested on Rog Ally Extreme Z1 with an external 8BitDo Ultimate 2C controller but the plugin is not hard-coded for this controller and simply focuses on disabling the integrated controller so the remaining (external) controller is the only one seen by games, in other words it should work for other controllers and also should work for newer versions e.g. Ally X.
+
+## Appearance
+
+![Within Decky](plugin1.jpg)
+
+![Disable/enable](plugin2.jpg)
