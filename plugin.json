@@ -1,0 +1,13 @@
+{
+  "name": "Toggle Ally Controller",
+  "author": "deck",
+  "flags": [
+    "root"
+  ],
+  "api_version": 1,
+  "publish": {
+    "tags": [],
+    "description": "Toggle the built-in ROG Ally controller on/off",
+    "image": ""
+  }
+}
