@@ -16,8 +16,8 @@ This is useful when an external controller conflicts with the built-in controls 
 
 ## Installation
 
-1. In Desktop mode download the latest release zip from https://github.com/darymhurst/decky-disable-integrated-rog-ally-controller/decky-disable-integrated-rog-ally-controller.zip.
-2. Manually upload the zip file from within Decky.
+1. In Desktop mode download the latest release zip from [here](https://github.com/darymhurst/decky-disable-integrated-rog-ally-controller/raw/refs/heads/main/decky-disable-integrated-rog-ally-controller.zip).
+2. Manually upload the zip file from within Decky after enabling developer mode.
 
 ## Notes
 
