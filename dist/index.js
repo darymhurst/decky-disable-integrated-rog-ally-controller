@@ -47,7 +47,7 @@ function Content() {
             console.error("toggle failed:", e);
         }
     };
-    return (SP_JSX.jsx(DFL.PanelSection, { title: "Controller Mode", children: SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.ToggleField, { label: "External Controller Mode", description: externalMode ? "Built-in controller hidden" : "Built-in controller active", checked: externalMode, onChange: toggle }) }) }));
+    return (SP_JSX.jsx(DFL.PanelSection, { title: "Controller Mode", children: SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.ToggleField, { label: "External Controller Mode", description: externalMode ? "Built-in controller disabled" : "Built-in controller enabled", checked: externalMode, onChange: toggle }) }) }));
 }
 var index = definePlugin(() => ({
     name: "Toggle Ally Controller",

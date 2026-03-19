@@ -8,7 +8,12 @@ PROFILE_PATH = "/etc/inputplumber/devices.d/49-rog_ally_no_gamepad.yaml"
 PROFILE_DISABLED = "/etc/inputplumber/devices.d/49-rog_ally_no_gamepad.yaml.disabled"
 XPAD_PATH = "/sys/bus/usb/drivers/xpad"
 
-PROFILE_CONTENT = """version: 1
+ASUS_VENDOR_ID="b05"
+ASUS_N_KEY_PRODUCT_ID="1abe"
+MICROSOFT_VENDOR_ID = "45e"
+XBOX_PRODUCT_ID = "28e"
+
+PROFILE_CONTENT = f"""version: 1
 kind: CompositeDevice
 name: ASUS ROG Ally (No Gamepad)
 single_source: false
@@ -23,35 +28,35 @@ source_devices:
   - group: gamepad
     ignore: true
     hidraw:
-      vendor_id: 0x0b05
-      product_id: 0x1abe
+      vendor_id: 0x{ASUS_VENDOR_ID:0>4s}
+      product_id: 0x{ASUS_N_KEY_PRODUCT_ID:0>4s}
       interface_num: 2
   - group: gamepad
     ignore: true
     evdev:
       name: Microsoft X-Box 360 pad
-      vendor_id: 045e
-      product_id: 028e
+      vendor_id: 0x{MICROSOFT_VENDOR_ID:0>4s}
+      product_id: 0x{XBOX_PRODUCT_ID:0>4s}
       handler: event*
   - group: keyboard
     evdev:
       name: ASUS ROG Ally Config
-      vendor_id: 0b05
-      product_id: 1abe
+      vendor_id: 0x{ASUS_VENDOR_ID:0>4s}
+      product_id: 0x{ASUS_N_KEY_PRODUCT_ID:0>4s}
       handler: event*
   - group: keyboard
     unique: false
     evdev:
       name: Asus Keyboard
-      vendor_id: 0b05
-      product_id: 1abe
+      vendor_id: 0x{ASUS_VENDOR_ID:0>4s}
+      product_id: 0x{ASUS_N_KEY_PRODUCT_ID:0>4s}
       handler: event*
   - group: keyboard
     unique: false
     evdev:
       name: ROG Ally Keyboard
-      vendor_id: 0b05
-      product_id: 1abe
+      vendor_id: 0x{ASUS_VENDOR_ID:0>4s}
+      product_id: 0x{ASUS_N_KEY_PRODUCT_ID:0>4s}
       handler: event*
   - group: imu
     iio:
@@ -89,7 +94,7 @@ def get_xpad_interface():
     for uevent in glob.glob("/sys/bus/usb/drivers/xpad/*/uevent"):
         with open(uevent) as f:
             content = f.read()
-        if "PRODUCT=45e/28e" in content or "045e" in content.lower():
+        if f"PRODUCT={MICROSOFT_VENDOR_ID}/{XBOX_PRODUCT_ID}" in content or f"{MICROSOFT_VENDOR_ID:0>4s}" in content.lower():
             interface = uevent.replace("/uevent", "").split("/")[-1]
             return interface
     return None
@@ -125,11 +130,11 @@ class Plugin:
             for path in glob.glob("/sys/bus/usb/devices/*/idVendor"):
                 with open(path) as f:
                     vendor = f.read().strip()
-                if vendor == "045e":
+                if vendor == f"{MICROSOFT_VENDOR_ID:0>4s}":
                     prod_path = path.replace("idVendor", "idProduct")
                     with open(prod_path) as f:
                         product = f.read().strip()
-                    if product == "028e":
+                    if product == f"{XBOX_PRODUCT_ID:0>4s}":
                         device_dir = path.replace("/idVendor", "")
                         for interface in glob.glob(f"{device_dir}/*:1.0"):
                             iface = interface.split("/")[-1]

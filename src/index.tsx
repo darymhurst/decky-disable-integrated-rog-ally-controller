@@ -43,7 +43,7 @@ function Content() {
       <PanelSectionRow>
         <ToggleField
           label="External Controller Mode"
-          description={externalMode ? "Built-in controller hidden" : "Built-in controller active"}
+          description={externalMode ? "Built-in controller disabled" : "Built-in controller enabled"}
           checked={externalMode}
           onChange={toggle}
         />
