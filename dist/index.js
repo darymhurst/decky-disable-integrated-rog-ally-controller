@@ -18,28 +18,28 @@ const definePlugin = (fn) => {
     };
 };
 
-const getStatus = callable("get_status");
-const enableExternal = callable("enable_external");
-const disableExternal = callable("disable_external");
+const isIntegratedControllerDisabled = callable("is_integrated_controller_disabled");
+const enableIntegrated = callable("enable_integrated");
+const disableIntegrated = callable("disable_integrated");
 function ControllerIcon() {
     return (SP_JSX.jsx("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 36 36", fill: "currentColor", style: { width: "1em", height: "1em" }, children: SP_JSX.jsx("path", { d: "M26 8H10C5.6 8 2 11.6 2 16s3.6 8 8 8h1.8l1.6 2.4c.4.6 1 .6 1.4 0L16.4 24h3.2l1.6 2.4c.4.6 1 .6 1.4 0L24.2 24H26c4.4 0 8-3.6 8-8s-3.6-8-8-8zm-14 9h-2v2H8v-2H6v-2h2v-2h2v2h2v2zm7 1a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3-3a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3 3a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" }) }));
 }
 function Content() {
     const [externalMode, setExternalMode] = SP_REACT.useState(false);
     SP_REACT.useEffect(() => {
-        getStatus().then((val) => {
+        isIntegratedControllerDisabled().then((val) => {
             setExternalMode(val);
         }).catch((e) => {
-            console.error("getStatus failed:", e);
+            console.error("isIntegratedControllerDisabled failed:", e);
         });
     }, []);
     const toggle = async (value) => {
         try {
             if (value) {
-                await enableExternal();
+                await disableIntegrated();
             }
             else {
-                await disableExternal();
+                await enableIntegrated();
             }
             setExternalMode(value);
         }
@@ -47,10 +47,10 @@ function Content() {
             console.error("toggle failed:", e);
         }
     };
-    return (SP_JSX.jsx(DFL.PanelSection, { title: "Controller Mode", children: SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.ToggleField, { label: "External Controller Mode", description: externalMode ? "Built-in controller disabled" : "Built-in controller enabled", checked: externalMode, onChange: toggle }) }) }));
+    return (SP_JSX.jsx(DFL.PanelSection, { title: "Controller Mode", children: SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.ToggleField, { label: "Integrated Controller State", description: externalMode ? "Integrated controller disabled" : "Integrated controller enabled", checked: externalMode, onChange: toggle }) }) }));
 }
 var index = definePlugin(() => ({
-    name: "Toggle Ally Controller",
+    name: "Disable Integrated Rog Ally Controller",
     content: SP_JSX.jsx(Content, {}),
     icon: SP_JSX.jsx(ControllerIcon, {}),
 }));

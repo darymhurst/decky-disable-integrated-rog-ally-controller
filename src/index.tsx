@@ -2,9 +2,9 @@ import { PanelSection, PanelSectionRow, ToggleField } from "@decky/ui";
 import { callable, definePlugin } from "@decky/api";
 import { useState, useEffect } from "react";
 
-const getStatus = callable<[], boolean>("get_status");
-const enableExternal = callable<[], boolean>("enable_external");
-const disableExternal = callable<[], boolean>("disable_external");
+const isIntegratedControllerDisabled = callable<[], boolean>("is_integrated_controller_disabled");
+const enableIntegrated = callable<[], boolean>("enable_integrated");
+const disableIntegrated = callable<[], boolean>("disable_integrated");
 
 function ControllerIcon() {
   return (
@@ -18,19 +18,19 @@ function Content() {
   const [externalMode, setExternalMode] = useState(false);
 
   useEffect(() => {
-    getStatus().then((val) => {
+    isIntegratedControllerDisabled().then((val) => {
       setExternalMode(val);
     }).catch((e) => {
-      console.error("getStatus failed:", e);
+      console.error("isIntegratedControllerDisabled failed:", e);
     });
   }, []);
 
   const toggle = async (value: boolean) => {
     try {
       if (value) {
-        await enableExternal();
+        await disableIntegrated();
       } else {
-        await disableExternal();
+        await enableIntegrated();
       }
       setExternalMode(value);
     } catch(e) {
@@ -42,8 +42,8 @@ function Content() {
     <PanelSection title="Controller Mode">
       <PanelSectionRow>
         <ToggleField
-          label="External Controller Mode"
-          description={externalMode ? "Built-in controller disabled" : "Built-in controller enabled"}
+          label="Integrated Controller State"
+          description={externalMode ? "Integrated controller disabled" : "Integrated controller enabled"}
           checked={externalMode}
           onChange={toggle}
         />
@@ -53,7 +53,7 @@ function Content() {
 }
 
 export default definePlugin(() => ({
-  name: "Toggle Ally Controller",
+  name: "Disable Integrated Rog Ally Controller",
   content: <Content />,
   icon: <ControllerIcon />,
 }));
