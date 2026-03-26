@@ -2,6 +2,19 @@
 if [[ -d "package" ]]; then
     rm -rf package
 fi
+
+PACKAGE_FILE="package.json"
+version=$(jq -r '.version' "$PACKAGE_FILE")
+if [ "$1" == "-release" ]; then
+    echo "Incrementing version for release..."
+    IFS='.' read -r major minor patch <<< "$version"
+    ((patch++))
+    version="${major}.${minor}.${patch}"
+    jq ".version = \"$version\"" "$PACKAGE_FILE" > "/tmp/$PACKAGE_FILE"
+    mv -f "/tmp/$PACKAGE_FILE" "$PACKAGE_FILE"
+fi
+echo "Version is: $version"
+
 pnpm build
 mkdir -p package/decky-disable-integrated-rog-ally-controller/dist
 cp dist/index.js package/decky-disable-integrated-rog-ally-controller/dist/

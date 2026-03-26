@@ -36,10 +36,10 @@ function Content() {
     const toggle = async (value) => {
         try {
             if (value) {
-                await disableIntegrated();
+                await enableIntegrated();
             }
             else {
-                await enableIntegrated();
+                await disableIntegrated();
             }
             setExternalMode(value);
         }
@@ -47,7 +47,7 @@ function Content() {
             console.error("toggle failed:", e);
         }
     };
-    return (SP_JSX.jsx(DFL.PanelSection, { title: "Controller Mode", children: SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.ToggleField, { label: "Integrated Controller State", description: externalMode ? "Integrated controller disabled" : "Integrated controller enabled", checked: externalMode, onChange: toggle }) }) }));
+    return (SP_JSX.jsx(DFL.PanelSection, { title: "Controller Mode", children: SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.ToggleField, { label: "Integrated Controller State", description: externalMode ? "Integrated controller disabled" : "Integrated controller enabled", checked: !externalMode, onChange: toggle }) }) }));
 }
 var index = definePlugin(() => ({
     name: "Disable Integrated Rog Ally Controller",

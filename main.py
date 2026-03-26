@@ -82,6 +82,12 @@ target_devices:
 capability_map_id: aly1
 """
 
+def log_info(s):
+    decky.logger.info(f"{PLUGIN_NAME}: {s}")
+
+def log_error(s):
+    decky.logger.error(f"{PLUGIN_NAME}: {s}")
+
 def run_cmd(args, timeout=10):
     env = os.environ.copy()
     env.pop("LD_LIBRARY_PATH", None)
@@ -96,19 +102,17 @@ def ensure_profile_exists(disabled):
         log_info("created inputplumber profile")
 
 def get_xpad_interface():
-    for uevent in glob.glob("/sys/bus/usb/drivers/xpad/*/uevent"):
-        with open(uevent) as f:
-            content = f.read()
-        if f"PRODUCT={MICROSOFT_VENDOR_ID}/{XBOX_PRODUCT_ID}" in content or f"{MICROSOFT_VENDOR_ID:0>4s}" in content.lower():
-            interface = uevent.replace("/uevent", "").split("/")[-1]
-            return interface
+    for uevent in glob.glob(f"{XPAD_PATH}/*/uevent"):
+        try:
+            with open(uevent) as f:
+                content = f.read()
+            if f"PRODUCT={MICROSOFT_VENDOR_ID}/{XBOX_PRODUCT_ID}" in content or f"{MICROSOFT_VENDOR_ID:0>4s}" in content.lower():
+                interface = uevent.replace("/uevent", "").split("/")[-1]
+                log_info(f"get_xpad_interface={interface}")
+                return interface
+        except:
+            log_error(f"Couldn't read {uevent}")
     return None
-
-def log_info(s):
-    decky.logger.info(f"{PLUGIN_NAME}: {s}")
-
-def log_error(s):
-    decky.logger.error(f"{PLUGIN_NAME}: {s}")
 
 def is_service_masked(service_name):
     masked = run_cmd(["systemctl", "is-enabled", service_name]).stdout.strip() == "masked"
@@ -254,3 +258,4 @@ class Plugin:
     async def enable_integrated(self):
         set_integrated_disabled(False)
         return True
+    

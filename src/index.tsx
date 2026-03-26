@@ -28,9 +28,9 @@ function Content() {
   const toggle = async (value: boolean) => {
     try {
       if (value) {
-        await disableIntegrated();
-      } else {
         await enableIntegrated();
+      } else {
+        await disableIntegrated();
       }
       setExternalMode(value);
     } catch(e) {
@@ -44,7 +44,7 @@ function Content() {
         <ToggleField
           label="Integrated Controller State"
           description={externalMode ? "Integrated controller disabled" : "Integrated controller enabled"}
-          checked={externalMode}
+          checked={!externalMode}
           onChange={toggle}
         />
       </PanelSectionRow>
