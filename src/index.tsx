@@ -2,9 +2,9 @@ import { PanelSection, PanelSectionRow, ToggleField } from "@decky/ui";
 import { callable, definePlugin } from "@decky/api";
 import { useState, useEffect } from "react";
 
+const isPreferExternal = callable<[], boolean>("is_prefer_external");
+const setPreferExternal = callable<[boolean], boolean>("set_prefer_external");
 const isIntegratedControllerDisabled = callable<[], boolean>("is_integrated_controller_disabled");
-const enableIntegrated = callable<[], boolean>("enable_integrated");
-const disableIntegrated = callable<[], boolean>("disable_integrated");
 
 function ControllerIcon() {
   return (
@@ -14,25 +14,40 @@ function ControllerIcon() {
   );
 }
 
-function Content() {
-  const [externalMode, setExternalMode] = useState(false);
+function description(preferExternal: boolean, builtinDisabled: boolean) {
+  if (!preferExternal) {
+    return "Built-in controller always on";
+  }
+  if (builtinDisabled) {
+    return "External controller detected — built-in disabled";
+  }
+  return "No external controller — built-in enabled";
+}
 
-  useEffect(() => {
-    isIntegratedControllerDisabled().then((val) => {
-      setExternalMode(val);
-    }).catch((e) => {
+function Content() {
+  const [preferExternal, setPreferExternalState] = useState(false);
+  const [builtinDisabled, setBuiltinDisabled] = useState(false);
+
+  const refresh = () => {
+    isPreferExternal().then(setPreferExternalState).catch((e) => {
+      console.error("isPreferExternal failed:", e);
+    });
+    isIntegratedControllerDisabled().then(setBuiltinDisabled).catch((e) => {
       console.error("isIntegratedControllerDisabled failed:", e);
     });
+  };
+
+  useEffect(() => {
+    refresh();
+    const id = window.setInterval(refresh, 2000);
+    return () => window.clearInterval(id);
   }, []);
 
   const toggle = async (value: boolean) => {
     try {
-      if (value) {
-        await enableIntegrated();
-      } else {
-        await disableIntegrated();
-      }
-      setExternalMode(value);
+      await setPreferExternal(value);
+      setPreferExternalState(value);
+      setBuiltinDisabled(await isIntegratedControllerDisabled());
     } catch(e) {
       console.error("toggle failed:", e);
     }
@@ -42,9 +57,9 @@ function Content() {
     <PanelSection title="Controller Mode">
       <PanelSectionRow>
         <ToggleField
-          label="Integrated Controller State"
-          description={externalMode ? "Integrated controller disabled" : "Integrated controller enabled"}
-          checked={!externalMode}
+          label="Prefer external controller"
+          description={description(preferExternal, builtinDisabled)}
+          checked={preferExternal}
           onChange={toggle}
         />
       </PanelSectionRow>

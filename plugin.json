@@ -7,7 +7,7 @@
   "api_version": 1,
   "publish": {
     "tags": [],
-    "description": "Toggle the built-in ROG Ally controller on/off",
+    "description": "Disable the built-in ROG Ally / Xbox Ally X controller when a 3rd-party pad is connected",
     "image": ""
   }
 }
